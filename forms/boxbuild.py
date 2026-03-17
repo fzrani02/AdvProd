@@ -34,16 +34,38 @@ def render_boxbuild():
         "Upload Previous Briefing PDF",
         type=["pdf"]
     )
+    parsed = None
+    if uploaded_pdf:
+        text = read_pdf(uploaded_pdf)
+        parsed = parse_form(text)
+        st.session_state["parsed_data"] = parsed
     
+        for key, value in parsed["project_data"].items(): 
+             st.session_state[key] = value
+
     st.markdown("---")
 
     project_data = render_project_form()
 
+    if "parsed_data" in st.session_state:
+        parsed = st.session_state["parsed_data"]
     
+        member_plant = convert_to_dict(parsed.get("member_plant", []))
+        member_pcis = convert_to_dict(parsed.get("member_pcis", []))
+        item_check = convert_to_dict(parsed.get("item_check", []))
+    
+        project_data.update(parsed["project_data"])
+        ##################
+        
+        revision = project_data.get("revision", "A")
+        editable_col = get_editable_column(revision, uploaded_pdf)
+
     st.markdown("---")
+    
     df = load_database()
     pci = project_data.get("pci","")
     initial = project_data["initial"]
+    
     departments = [
         "Product Engineer",
         "Process Engineer (SMT)",
@@ -72,27 +94,7 @@ def render_boxbuild():
     editable_col =1
 
     revision = None
-
-    if uploaded_pdf:
-        text = read_pdf(uploaded_pdf)
-    
-        parsed = parse_form(text)
-        
-        member_plant = convert_to_dict(parsed.get("member_plant", []))
-        member_pcis = convert_to_dict(parsed.get("member_pcis", []))
-        item_check = convert_to_dict(parsed.get("item_check",[]))
-        
-        for key, value in parsed["project_data"].items():
-            st.session_state[key] = value
-            st.write(parsed)
-          
-            project_data.update(parsed["project_data"])
-           
-        
-            revision = project_data.get("revision", "A")
-                    
-            editable_col = get_editable_column(revision, uploaded_pdf)
-    
+       
     if revision is None and uploaded_pdf is None:
         editable_col = 1
     
