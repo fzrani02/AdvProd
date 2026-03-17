@@ -84,14 +84,14 @@ def render_boxbuild():
         
         for key, value in parsed["project_data"].items():
             st.session_state[key] = value
-        st.write(parsed)
-      
-        project_data.update(parsed["project_data"])
-       
-    
-        revision = project_data.get("revision", "A")
-                
-        editable_col = get_editable_column(revision, uploaded_pdf)
+            st.write(parsed)
+          
+            project_data.update(parsed["project_data"])
+           
+        
+            revision = project_data.get("revision", "A")
+                    
+            editable_col = get_editable_column(revision, uploaded_pdf)
     
     if revision is None and uploaded_pdf is None:
         editable_col = 1
