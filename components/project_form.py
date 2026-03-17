@@ -10,7 +10,8 @@ def render_project_form():
 
     if "data_updated" not in st.session_state:
       st.session_state["data_updated"] = date.today()
-      date_updated = st.date_input("Date Updated", key="data_updated")
+      
+    date_updated = st.date_input("Date Updated", key="data_updated")
 
   with col2:
     customer_map = {
@@ -22,9 +23,12 @@ def render_project_form():
     pci = st.text_input("PCI FG P/N", key="pci")
     initial = pci[:2].upper() if pci else ""
 
+    customer_auto = customer_map.get(initial, "")
+    
     if "customer" not in st.session_state:
-      st.session_state["customer"] = customer_auto
-      customer = st.text_input("Customer", key="customer")
+        st.session_state["customer"] = customer_auto
+      
+    customer = st.text_input("Customer", key="customer")
     
     project_account = st.text_input("Project Account", key="project_account")
 
