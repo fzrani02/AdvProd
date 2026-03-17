@@ -6,8 +6,11 @@ def render_project_form():
   
   with col1:
     project_name = st.text_input("Project Name", key="project_name")
-    build_type = st.text_input("Build Type")
-    date_updated = st.date_input("Date Updated", value=date.today())
+    build_type = st.text_input("Build Type", key="build_type")
+
+    if "data_updated" not in st.session_state:
+      st.session_state["data_updated"] = date.today()
+      date_updated = st.date_input("Date Updated", key="data_updated")
 
   with col2:
     customer_map = {
@@ -16,21 +19,21 @@ def render_project_form():
       "OR": "ORBCOMM",
       "LF": "LIFE FITNESS",
     }
-    pci = st.text_input("PCI FG P/N")
+    pci = st.text_input("PCI FG P/N", key="pci")
     initial = pci[:2].upper() if pci else ""
 
-    customer_auto = customer_map.get(initial, "")
-
+    if "customer" not in st.session_state:
+      st.session_state["customer"] = customer_auto
+      customer = st.text_input("Customer", key="customer")
     
-    
-    customer = st.text_input("Customer", value=customer_auto)
-    project_account = st.text_input("Project Account")
+    project_account = st.text_input("Project Account", key="project_account")
 
   with col3:
-    revision = st.text_input("Revision", disabled=True)
+    revision = st.text_input("Revision", key="revision", disabled=True)
     product_type = st.selectbox(
       "Product Type",
-      ["Automotive","Medical","Military","Consumer"]
+      ["Automotive","Medical","Military","Consumer"],
+      key="product_type"
     )
   
   return {
