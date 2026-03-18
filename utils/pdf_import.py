@@ -99,13 +99,16 @@ def extract_member_plant(lines):
                 
                 if email_index is not None:
                     email = parts[email_index]
-                    name = parts[email_index - 1]
-                    department = " ".join(parts[:email_index - 1])
+                    
+                    name = parts[email_index - 2]
+                    ext = parts [email_index -1]
+                    department = " ".join(parts[:email_index - 2])
 
                     member = {
                         "department": department.strip(),
                         "name": name.strip(),
                         "email": email.strip(),
+                        "ext": ext.strip(),
                         "M1": "✓" in line,
                         "M2": False,
                         "M3": False,
