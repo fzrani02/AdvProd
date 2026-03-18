@@ -190,6 +190,5 @@ def extract_item_check(lines):
 
     return items
 
-st.write("ITEM CHECK:", item_check)
 
 
