@@ -85,9 +85,7 @@ def render_items_to_check(df):
     st.markdown("## ITEMS TO CHECK")
     
     st.write ("NOTE: All documents/package from Design/Customer must be updated for every stage of the build including Mass Production")
-    st.write("PLANT:", member_plant)
-    st.write("PCIS:", member_pcis)
-    st.write("ITEM CHECK:", item_check)
+   
     engineer_list = [""] + df["ER"].unique().tolist()
     st.markdown(
         """
