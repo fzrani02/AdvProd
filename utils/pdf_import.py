@@ -112,6 +112,12 @@ def extract_member_plant(lines):
             if "@" not in line:
                 continue
 
+            parts = line.split()
+            email = next((p for p in parts if "@" in p), None)
+
+            if not email:
+                continue
+
             department = None
             for dept in departments_master:
                 if dept in line:
@@ -128,6 +134,7 @@ def extract_member_plant(lines):
                 name = remaining_parts[0]
                 ext = remaining_parts[1]
             elif len(remaining_parts) == 1:
+                neme = remaining_parts[0]
                 ext = ""
             else:
                 name = ""
@@ -170,10 +177,10 @@ def extract_member_pcis(lines):
             if "Engineer" in line or "Manager" in line:
 
                 parts = line.split()
-                email_index = next((i for i, p in enumerate(parts) if "@" in p), None)
+                
+                email = next((p for p in parts if "@" in p), None)
 
-
-                if email_index is None:
+                if not email:
                     continue
                     
                 email = parts[email_index]
@@ -181,17 +188,17 @@ def extract_member_pcis(lines):
                 name = parts[email_index - 1]
                 department = " ".join(parts[:email_index - 1])
 
-                    member = {
-                        "department": department.strip(),
-                        "name": name.strip(),
-                        "email": email.strip(),
-                        "M1": "✓" in line,
-                        "M2": False,
-                        "M3": False,
-                        "M4": False
-                    }
+                member = {
+                    "department": department.strip(),
+                    "name": name.strip(),
+                    "email": email.strip(),
+                    "M1": "✓" in line,
+                    "M2": False,
+                    "M3": False,
+                    "M4": False
+                }
 
-                    members.append(member)
+                members.append(member)
 
     return members
 
