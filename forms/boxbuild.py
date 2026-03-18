@@ -59,11 +59,6 @@ def render_boxbuild():
         st.write("PCIS:", member_pcis)
         st.write("ITEM CHECK:", item_check)
         
-        print("=== DEBUG ITEMS RAW ===")
-        for l in lines:
-            if "ITEM" in l.upper():
-                print(l)
-                
         ##################
         
         revision = project_data.get("revision", "A")
