@@ -148,7 +148,7 @@ def extract_member_plant(lines):
                 "M1": "✓" in line,
                 "M2": False,
                 "M3": False,
-                "M4": False   
+                "M4": False
             }
 
             members.append(member)
