@@ -1,6 +1,9 @@
 import pdfplumber
 import re
 
+def is_checked(val):
+    return val in ["✓", "✔", "√"]
+    
 def read_pdf(uploaded_file):
 
     text = ""
@@ -128,28 +131,52 @@ def extract_member_plant(lines):
             if not department:
                 continue
 
-            remaining = line.replace(department, "").replace(email, "").strip()
-            remaining_parts = remaining.split()
+            parts = line.split()
 
-            if len(remaining_parts) == 2:
+            email_index = None
+            for i, p in enumerate(parts):
+                if "@" in p:
+                    email_index = i
+                    break
+
+            if email_index is None:
+                continue
+
+            email = parts[email_index]
+            checks = parts[email_index + 1:]
+
+            before_email = parts[:email_index]
+            dept_words = department.split()
+
+            if before_email[:len(dept_words)] == dept_words:
+                remaining_parts = before_email[len(dept_words):]
+            else:
+                remaining_parts = before_email
+
+            if len(remaining_parts) >= 2:
                 name = remaining_parts[0]
                 ext = remaining_parts[1]
-            elif len(remaining_parts) == 1:
+            elif len(remaining_parts) == 1 :
                 name = remaining_parts[0]
                 ext = ""
             else:
                 name = ""
                 ext = ""
+            
+            M1 = is_checked(checks[0]) if len(checks) > 0 else False
+            M2 = is_checked(checks[1]) if len(checks) > 1 else False
+            M3 = is_checked(checks[2]) if len(checks) > 2 else False
+            M4 = is_checked(checks[3]) if len(checks) > 3 else False
 
             member = {
                 "department": department,
                 "name": name, 
                 "email": email,
                 "ext": ext,
-                "M1": "✓" in line,
-                "M2": False,
-                "M3": False,
-                "M4": False
+                "M1": M1,
+                "M2": M2,
+                "M3": M3,
+                "M4": M4
             }
 
             members.append(member)
@@ -190,23 +217,30 @@ def extract_member_pcis(lines):
                     continue
 
                 email = parts[email_index]
+                checks = parts[email_index + 1:]
+
                 name = parts[email_index - 1] if email_index > 0 else ""
                 department = " ".join(parts[:email_index - 1])
+                
+                M1 = is_checked(checks[0]) if len(checks) > 0 else False
+                M2 = is_checked(checks[1]) if len(checks) > 1 else False
+                M3 = is_checked(checks[2]) if len(checks) > 2 else False
+                M4 = is_checked(checks[3]) if len(checks) > 3 else False
 
                 member = {
                     "department": department.strip(),
                     "name": name.strip(),
                     "email": email.strip(),
-                    "M1": "✓" in line,
-                    "M2": False,
-                    "M3": False,
-                    "M4": False
+                    "M1": M1,
+                    "M2": M2,
+                    "M3": M3,
+                    "M4": M4
                 }
 
                 members.append(member)
 
     return members
-
+    
 def extract_item_check(lines):
 
     items = []
