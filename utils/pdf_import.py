@@ -113,7 +113,7 @@ def extract_member_plant(lines):
                 continue
 
             department = None
-            for dept in department_master:
+            for dept in departments_master:
                 if dept in line:
                     department = dept
                     break
