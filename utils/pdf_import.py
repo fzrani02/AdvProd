@@ -1,8 +1,9 @@
 import pdfplumber
 import re
 
+
 def is_checked(val):
-    return val in ["✓", "✔", "√"]
+    return val in ["✓", "✔", "√", "v", "V", "x", "X", "3"]
     
 def read_pdf(uploaded_file):
 
@@ -143,7 +144,13 @@ def extract_member_plant(lines):
                 continue
 
             email = parts[email_index]
-            checks = parts[email_index + 1:]
+            after_email = line.split(email)[-1]
+            tokens = after_email.split()
+
+            M1 = is_checked(tokens[0]) if len(tokens) > 0 else False
+            M2 = is_checked(tokens[1]) if len(tokens) > 1 else False
+            M3 = is_checked(tokens[2]) if len(tokens) > 2 else False
+            M4 = is_checked(tokens[3]) if len(tokens) > 3 else False
 
             before_email = parts[:email_index]
             dept_words = department.split()
@@ -162,11 +169,6 @@ def extract_member_plant(lines):
             else:
                 name = ""
                 ext = ""
-            
-            M1 = is_checked(checks[0]) if len(checks) > 0 else False
-            M2 = is_checked(checks[1]) if len(checks) > 1 else False
-            M3 = is_checked(checks[2]) if len(checks) > 2 else False
-            M4 = is_checked(checks[3]) if len(checks) > 3 else False
 
             member = {
                 "department": department,
@@ -217,15 +219,16 @@ def extract_member_pcis(lines):
                     continue
 
                 email = parts[email_index]
-                checks = parts[email_index + 1:]
+                after_email = line.split(email)[-1]
+                tokens = after_email.split()
 
                 name = parts[email_index - 1] if email_index > 0 else ""
                 department = " ".join(parts[:email_index - 1])
                 
-                M1 = is_checked(checks[0]) if len(checks) > 0 else False
-                M2 = is_checked(checks[1]) if len(checks) > 1 else False
-                M3 = is_checked(checks[2]) if len(checks) > 2 else False
-                M4 = is_checked(checks[3]) if len(checks) > 3 else False
+                M1 = is_checked(tokens[0]) if len(tokens) > 0 else False
+                M2 = is_checked(tokens[1]) if len(tokens) > 1 else False
+                M3 = is_checked(tokens[2]) if len(tokens) > 2 else False
+                M4 = is_checked(tokens[3]) if len(tokens) > 3 else False
 
                 member = {
                     "department": department.strip(),
