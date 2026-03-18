@@ -89,7 +89,7 @@ def render_items_to_check(df, item_check):
         st.warning("No items parsed from PDF")
         return
 
-    if item in item_check:
+    for item in item_check:
         st.write(item)
         
     engineer_list = [""] + df["ER"].unique().tolist()
