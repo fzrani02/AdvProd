@@ -86,7 +86,7 @@ def render_items_to_check(df, item_check):
     
     st.write ("NOTE: All documents/package from Design/Customer must be updated for every stage of the build including Mass Production")
     if not item_check:
-        st.warning("Using default items (no PDF uploaded)")
+        st.warning("No items parsed from PDF")
 
     for item in item_check:
         st.write(item)
@@ -126,18 +126,10 @@ def render_items_to_check(df, item_check):
                    if item == "ICT Program / Fixture":
                        c1,c2,c3,c4 = st.columns([3,2,2,4])
                        with c1:
-                           st.markdown("**ICT Program / Fixture**")
-
-                           c1,c2,c3,c4 = st.columns([3,2,2,4])
-
-                       with c1:
-                           st.checkbox("Agilent", key="ict_agilent")
-                           st.checkbox("Teradyne", key="ict_teradyne")
-                           st.checkbox("Genrad", key="ict_genrad")
+                           st.write(item)
                            
                        with c2:
-                           st.checkbox("Tri", key="ict_tri")
-                           st.checkbox("Tescon", key="ict_tescon")
+                           render_test_checkbox()
                            
                        with c3:
                            st.text_input("", key="target_test")
@@ -145,6 +137,7 @@ def render_items_to_check(df, item_check):
                        with c4:
                            st.text_input("", key="remark_test")
 
-                       render_row("Flying Probe Test Program", engineer_list)
-
+                   else:
+                       render_row(item, engineer_list)
+                       
                     
