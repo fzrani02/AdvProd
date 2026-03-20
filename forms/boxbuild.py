@@ -146,7 +146,7 @@ def render_boxbuild():
         
         revision = get_next_revision(project_data.get("revision"))
         project_data["revision"] = revision
-        project_data["data_updated"] = date.today()
+        project_data["date_updated"] = date.today()
     
         pdf_file = generate_pdf(project_data, departments, pcis_departments)
 
