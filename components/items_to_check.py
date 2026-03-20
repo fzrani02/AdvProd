@@ -10,7 +10,7 @@ ICT_ROWS = [
     ("Genrad", "")
 ]
 
-def render_row(item, engineer_list):
+def render_row(item, engineer_list, section):
     c1, c2, c3,c4,c5 = st.columns([3,2,2,2,4])
     
     with c1:
@@ -23,19 +23,19 @@ def render_row(item, engineer_list):
         st.multiselect(
             "",
             engineer_list,
-            key=f"pic_row_{normalize_key(item)}",
+            key=f"pic_{normalize_key(section)}_{normalize_key(item)}",
             label_visibility="collapsed"
         )
     with c4: 
         st.text_input(
             "",
-            key=f"target_row_{item}",
+            key=f"target_{normalize_key(section)}_{normalize_key(item)}",
             label_visibility = "collapsed"
         )
     with c5:
         st.text_input(
             "",
-            key=f"remark_row_{item}",
+            key=f"remark_{normalize_key(section)}_{normalize_key(item)}",
             label_visibility = "collapsed"
         )
 
@@ -210,7 +210,8 @@ def render_items_to_check(df, item_check):
                                 )
                            
                    else:
-                       render_row(item, engineer_list)
+                       render_row(item, engineer_list, section)
+                       
                       
                         
 
