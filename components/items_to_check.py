@@ -1,6 +1,12 @@
 
 import streamlit as st
 
+ICT_ROWS = [
+    ("Agilent", "Tri"),
+    ("Teradyne", "Tescon"),
+    ("Genrad", "")
+]
+
 def render_test_checkbox():
     colA, colB = st.columns(2)
 
@@ -130,21 +136,51 @@ def render_items_to_check(df, item_check):
                    if item == "ICT Program / Fixture":
                        c1,c2,c3,c4,c5 = st.columns([3,2,2,2,4])
                        with c1:
-                           st.write(item)
-
-                       with c2:
-                           render_test_checkbox()
+                           st.write("ICT Program / Fixture")
                            
                        with c3:
-                           st.multiselect("", engineer_list, key="pic_test")
+                           st.multiselect("", engineer_list, key="pic_ict", label_visibility="collapsed")
                            
                        with c4:
-                           st.text_input("", key="target_test")
+                           st.text_input("", key="target_ict", label_visibility="collapsed")
                            
                        with c5:
-                           st.text_input("", key="remark_test")
+                           st.text_input("", key="remark_ict", label_visibility="collapsed")
 
-                   else:
-                       render_row(item, engineer_list)
+                       for left, right in ICT_ROWS:
+                           c1,c2,c3,c4,c5 = st.columns([3,2,2,2,4])
+
+                           with c1:
+                               st.checkbox(left,key=f"ict_{right,lower()}")
+
+                           with c2:
+                               if right:
+                                   st.checkbox(right, key=f"ict_{right.lower()}")
+
+                           with c3:
+                               st.multiselect(
+                                   "",
+                                   engineer_list,
+                                   key=f"pic_{left}",
+                                   label_visibility="collapsed"
+                               )
+
+                           with c4:
+                               st.text_input(
+                                   "",
+                                   key=f"target_{left}",
+                                   label_visibility="collapsed"
+                               )
+
+                           with c5:
+                               st.text_input(
+                                   "",
+                                   key=f"remark_{left}",
+                                   label_visibility="collapsed"
+                               )
+                               
+                       render_row("FLying Probe Test Program", engineer_list)
+                        
+
                        
                     
