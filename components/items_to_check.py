@@ -1,23 +1,14 @@
 
 import streamlit as st
 
+def normalize_key(text):
+    return text.lower().replace(" ", "_").replace("/", "_")
+
 ICT_ROWS = [
     ("Agilent", "Tri"),
     ("Teradyne", "Tescon"),
     ("Genrad", "")
 ]
-
-def render_test_checkbox():
-    colA, colB = st.columns(2)
-
-    with colA:
-        st.checkbox("Agilent", key="ict_agilent")
-        st.checkbox("Teradyne", key="ict_teradyne")
-        st.checkbox("Genrad", key="ict_genrad")
-
-    with colB:
-        st.checkbox("Tri", key="ict_tri")
-        st.checkbox("Tescon", key="ict_tescon")
 
 def render_row(item, engineer_list):
     c1, c2, c3,c4,c5 = st.columns([3,2,2,2,4])
@@ -54,38 +45,76 @@ SECTIONS = {
         "BOM",
         "Drawing",
         "Drawing Upload to SAP or SharePoint",
-        "Process Control Plan"
+        "Process Control Plan",
+        "Customer Procedure",
+        "Customer Specific Requirements (CSR)",
+        "Metal Assessment (Steel/Iron/Aluminum/Others)",
+        "Others"
     ],
 
     "SMT":[
-        "Stencil",
-        "Solder Paste",
-        "SMT Program"
+        "XY or Customer’s CAD data",
+        "Component Review",
+        "Golden Sample (2 panels form for AOI)",
+        "PCA DFM Review",
+        "Refresh PCA",
+        "Loading List / Work Instruction",
+        "Label Pasting Location",
+        "Special Instruction",
+        "Others"
     ],
+    
     "MI": [
-        "MI Preparation",
-        "Work Instruction"
+        "Robotic Soldering Jig",
+        "Lead Protrusion Review",
+        "Lead Cutting Jig",
+        "Lead Protrusion Checking",
+        "Chip Wave",
+        "MI Work Instruction",
+        "Others"
     ],
+    
     "BACK END": [
-        "Assembly Jig",
-        "Process Flow"
+        "Battery Handling Instruction",
+        "Packing Work Instruction (Box Build)",
+        "Packing Work Instruction (PCBA)",
+        "Conformal Coating Machine Allocation",
+        "Washing",
+        "Label Pasting Location",
+        "Special Instruction",
+        "Others"
     ], 
     
     "TEST":[
-        "ICT Program / Fixture"
+        "ICT Program / Fixture",
+        "Flying Probe Test Program",
+        "Board Level Test Program / Fixture",
+        "Final Test Program / Fixture",
+        "Test Work Instructions",
+        "Off-board / On-board Programming"
     ],
+    
     "QUALITY":[
-        "Control Plan",
-        "Quality Instruction"
+        "OQC Inspection Procedure",
+        "Others"
     ],
+    
     "MATERIAL AVAILABILITY":[
-        "Material Status"
+        "Indirect Materials Full Kit Date",
+        "Refresh Production Order",
+        "Others"
     ],
+    
     "SHIPMENT PLAN":[
-        "Shipment Schedule"
+        "Packaging Requirement",
+        "Pack Plan",
+        "Others"
     ],
+    
     "OTHERS":[
-        "Other Requirements"
+        "NPI Buy-Off Checklist",
+        "Build Timeline (Gantt Chart)",
+        "RTDC Set-up / Spectrum Pro (For traceability system)"
     ]
 }
 
@@ -134,52 +163,56 @@ def render_items_to_check(df, item_check):
            with st.expander(section, expanded=False):
                for item in items:
                    if item == "ICT Program / Fixture":
-                       c1,c2,c3,c4,c5 = st.columns([3,2,2,2,4])
-                       with c1:
-                           st.write("ICT Program / Fixture")
+                       render_ict_block(
                            
-                       with c3:
-                           st.multiselect("", engineer_list, key="pic_ict", label_visibility="collapsed")
-                           
-                       with c4:
-                           st.text_input("", key="target_ict", label_visibility="collapsed")
-                           
-                       with c5:
-                           st.text_input("", key="remark_ict", label_visibility="collapsed")
-
-                       for left, right in ICT_ROWS:
                            c1,c2,c3,c4,c5 = st.columns([3,2,2,2,4])
-
                            with c1:
-                               st.checkbox(left,key=f"ict_{left.lower()}")
-
-                           with c2:
-                               if right:
-                                   st.checkbox(right, key=f"ict_{right.lower()}")
-
-                           with c3:
-                               st.multiselect(
-                                   "",
-                                   engineer_list,
-                                   key=f"pic_{left}",
-                                   label_visibility="collapsed"
-                               )
-
-                           with c4:
-                               st.text_input(
-                                   "",
-                                   key=f"target_{left}",
-                                   label_visibility="collapsed"
-                               )
-
-                           with c5:
-                               st.text_input(
-                                   "",
-                                   key=f"remark_{left}",
-                                   label_visibility="collapsed"
-                               )
+                               st.write("ICT Program / Fixture")
                                
-                       render_row("FLying Probe Test Program", engineer_list)
+                           with c3:
+                               st.multiselect("", engineer_list, key="pic_ict", label_visibility="collapsed")
+                               
+                           with c4:
+                               st.text_input("", key="target_ict", label_visibility="collapsed")
+                               
+                           with c5:
+                               st.text_input("", key="remark_ict", label_visibility="collapsed")
+    
+                           for left, right in ICT_ROWS:
+                               c1,c2,c3,c4,c5 = st.columns([3,2,2,2,4])
+    
+                               with c1:
+                                   st.checkbox(left,key=f"ict_{left.lower()}")
+    
+                               with c2:
+                                   if right:
+                                       st.checkbox(right, key=f"ict_{right.lower()}")
+    
+                               with c3:
+                                   st.multiselect(
+                                       "",
+                                       engineer_list,
+                                       key=f"pic_{normalize_key(left)}",
+                                       label_visibility="collapsed"
+                                   )
+    
+                               with c4:
+                                   st.text_input(
+                                       "",
+                                       key=f"target_{normalize_key(left)}",
+                                       label_visibility="collapsed"
+                                   )
+    
+                               with c5:
+                                   st.text_input(
+                                       "",
+                                       key=f"remark_{normalize_key(left)}",
+                                       label_visibility="collapsed"
+                                   )
+                       )
+                   else:
+                       render_row(item, engineer_list)
+                      
                         
 
                        
