@@ -126,10 +126,18 @@ def render_items_to_check(df, item_check):
                    if item == "ICT Program / Fixture":
                        c1,c2,c3,c4 = st.columns([3,2,2,4])
                        with c1:
-                           st.write(item)
+                           st.markdown("**ICT Program / Fixture**")
+
+                           c1,c2,c3,c4 = st.columns([3,2,2,4])
+
+                       with c1:
+                           st.checkbox("Agilent", key="ict_agilent")
+                           st.checkbox("Teradyne", key="ict_teradyne")
+                           st.checkbox("Genrad", key="ict_genrad")
                            
                        with c2:
-                           render_test_checkbox()
+                           st.checkbox("Tri", key="ict_tri")
+                           st.checkbox("Tescon", key="ict_tescon")
                            
                        with c3:
                            st.text_input("", key="target_test")
@@ -137,7 +145,6 @@ def render_items_to_check(df, item_check):
                        with c4:
                            st.text_input("", key="remark_test")
 
-                   else:
-                       render_row(item, engineer_list)
-                       
+                       render_row("Flying Probe Test Program", engineer_list)
+
                     
