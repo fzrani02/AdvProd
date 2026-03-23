@@ -205,18 +205,24 @@ def render_items_to_check(df, item_check):
                                 )
                     
                             with c4:
+                                key_target = f"target_ict_{normalize_key(left)}"
+                                value_target = st.session_state.get(key_target, "")
+
                                 st.text_area(
                                     "",
-                                    key=f"target_ict_{normalize_key(left)}",
-                                    height=100 if len(value) > 50 else 60,
+                                    key=key_target,
+                                    height=100 if len(value_target) > 50 else 60,
                                     label_visibility="collapsed"
                                 )
                     
                             with c5:
+                                key_remark = f"remark_ict_{normalize_key(left)}"
+                                value_remark = st.session_state.get(key_remark, "")
+                                
                                 st.text_area(
                                     "",
-                                    key=f"remark_ict_{normalize_key(left)}",
-                                    height=100 if len(value) > 50 else 60,
+                                    key=key_remark,
+                                    height=120 if len(value_remark) > 50 else 80,
                                     label_visibility="collapsed"
                                 )
                            
