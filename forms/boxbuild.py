@@ -44,11 +44,16 @@ def apply_checkbox_state(item_check):
 
 
 def render_boxbuild():
+    import time
+    start_total = time.time()
+    
     member_plant = {}
     member_pcis = {}
     item_check = {}
 
+    t_header = time.time()
     render_header()
+    st.write("Header time:", time.time() - t_header)
         
     uploaded_pdf = st.file_uploader(
         "Upload Previous Briefing PDF",
@@ -57,8 +62,13 @@ def render_boxbuild():
     parsed = None
     
     if uploaded_pdf and "parsed_data" not in st.session_state:
+        t_pdf = time.time()
+
+        
         text = read_pdf(uploaded_pdf)
         parsed = parse_form(text)
+
+        st.write("PDF parse time:", time.time() - t_pdf)
         
         st.session_state["parsed_data"] = parsed
     
@@ -77,8 +87,11 @@ def render_boxbuild():
         member_plant = convert_to_dict(parsed.get("member_plant", []))
         member_pcis = convert_to_dict(parsed.get("member_pcis", []))
         item_check = parsed.get("item_check", [])
+
+        t_form = time.time()
     
         project_data.update(parsed["project_data"])
+        st.write("Form render time:", time.time() - t_form)
         st.write("ITEM CHECK:", item_check)
             
         ##################
@@ -88,7 +101,10 @@ def render_boxbuild():
 
     st.markdown("---")
     
+    t_db = time.time()
     df = load_database()
+    st.write("Load DB time:", time.time() - t_db)
+    
     pci = project_data.get("pci","")
     initial = project_data["initial"]
     
@@ -135,6 +151,7 @@ def render_boxbuild():
 
    
     with st.expander("PROJECT TEAM MEMBERS (PLANT)", expanded=False):
+        t_table1 = time.time()
         
         render_team_table(
             df,
@@ -146,8 +163,12 @@ def render_boxbuild():
             "PROJECT TEAM MEMBERS (PLANTS)",
             "plant"
         )
+        st.write("Table PLANT time:", time.time() - t_table1)
 
     with st.expander("PROJECT TEAM MEMBERS (PCIS)", expanded=False):
+
+        t_table2 = time.time()
+        
         render_team_table(
             df,
             initial,
@@ -158,21 +179,28 @@ def render_boxbuild():
             "PROJECT TEAM MEMBERS (PCIS)",
             "pcis"
         )
+        st.write("Table PCIS time:", time.time() - t_table2)
     autosave()
 
     st.markdown("---")
+    
+    t_items = time.time()
     render_items_to_check(df, item_check)
+    st.write("Items check time:", time.time() - t_items)
+             
     st.markdown("---")
 
     from utils.revision_logic import get_next_revision
 
     if st.button("Export to PDF"):
+        t_export = time.time()
         
         revision = get_next_revision(project_data.get("revision"))
         project_data["revision"] = revision
         project_data["date_updated"] = date.today()
     
         pdf_file = generate_pdf(project_data, departments, pcis_departments)
+        st.write("PDF generate time:", time.time() - t_export)
 
         pci = project_data.get("pci","")
         account = project_data.get("project_account","")
@@ -187,4 +215,6 @@ def render_boxbuild():
             file_name=filename,
             mime="application/pdf"
         )
+        
+    st.write("TOTAL time:", time.time() - start_total)
     
