@@ -59,6 +59,7 @@ def render_boxbuild():
         st.write("PCIS:", member_pcis)
         st.write("ITEM CHECK:", item_check)
         st.write("DEBUG MEMBER:", dept, existing_member)
+        st.write(parsed["member_plant"])
         
         ##################
         
