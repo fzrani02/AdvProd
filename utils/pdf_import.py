@@ -1,6 +1,12 @@
 import pdfplumber
 import re
+import json
 
+def parse_checkbox_json(text):
+    try:
+        return json.loads(text)
+    except:
+        return None
 
 def is_checked(val):
     return val in ["✓", "✔", "√", "v", "V", "x", "X", "3"]
