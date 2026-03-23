@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.database import get_engineers_by_department
 
-def render_team_table(df, initial, departments, editable_col, attendance_data, title, key_prefix):
+def render_team_table(df, initial, departments, editable_col, attendance_data, member_data, title, key_prefix):
 
     # CSS
     st.markdown("""
@@ -58,6 +58,9 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, t
 
     # ROW DATA
     for dept in departments:
+        existing_member = attendance_data.get(dept, {})
+        existing_name = existing_member.get("name", "")
+        existing_email = existing_member.get("email", "")
 
         engineers = get_engineers_by_department(df, initial, dept)
         engineer_list = [""] + engineers["ER"].tolist()
@@ -72,12 +75,17 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, t
                 st.write(dept)
 
             with col2:
+                default_index = 0
+                if existing_name in engineer_list:
+                    default_index = engineer_list.index(existing_name)
+
                 selected = st.selectbox(
                     "",
                     engineer_list,
                     key=f"{key_prefix}_{dept}_engineer",
                     label_visibility="collapsed"
                 )
+                
                 engineer_selected = selected != ""
 
             email_key = f"{key_prefix}_{dept}_email"
@@ -89,11 +97,15 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, t
                     engineers["ER"] == selected, "Email"
                 ].values[0]
 
+            else:
+                email = existing_email
+
             st.session_state[email_key] = email
 
             with col3:
                 st.text_input(
                     "",
+                    value = existing_member.get("ext", ""),
                     key=f"{key_prefix}_{dept}_ext",
                     label_visibility="collapsed"
                 )
