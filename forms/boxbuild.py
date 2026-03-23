@@ -122,6 +122,7 @@ def render_boxbuild():
             departments,
             editable_col,
             member_plant,
+            member_plant,
             "PROJECT TEAM MEMBERS (PLANTS)",
             "plant"
         )
@@ -132,6 +133,7 @@ def render_boxbuild():
             initial,
             pcis_departments,
             editable_col,
+            member_pcis,
             member_pcis,
             "PROJECT TEAM MEMBERS (PCIS)",
             "pcis"
