@@ -166,7 +166,8 @@ def generate_pdf(project_data, departments, pcis_departments):
                 # main row
                 pic = ", ".join(st.session_state.get("pic_ict", []))
                 target = st.session_state.get("target_ict", "")
-                remark = st.session_state.get("remark_ict", "")
+                remark_text = st.session_state.get("remark_ict", "")
+                remark = Paragraph(remark_text.replace("\n", "<br/>", remark_style)
     
                 item_table.append([
                     "",
@@ -201,7 +202,15 @@ def generate_pdf(project_data, departments, pcis_departments):
                 pic = ", ".join(st.session_state.get(f"pic_{key_base}", []))
                 target = st.session_state.get(f"target_{key_base}", "")
                 remark_text = st.session_state.get(f"remark_{key_base}", "")
-                remark = Paragraph(remark_text.replace("\n", "<br/>"), remark_style)
+
+                # paksa wrap tiap 90 karakter 
+
+                if len(remark_text) > 90:
+                    remark_text = "<br/>".join(
+                        [remark_text[i:i+90] for i in range(0, len(remark_text), 80)]
+                    )
+
+                remark = Paragraph(remark_text, remark_style)
     
                 item_table.append([
                     "",
@@ -212,7 +221,7 @@ def generate_pdf(project_data, departments, pcis_departments):
                 ])
 
     ###############
-    items = Table(item_table, colWidths=[90,130,90,70,180], hAlign='LEFT')
+    items = Table(item_table, colWidths=[80,120,80,70,220], hAlign='LEFT')
 
     items.setStyle(TableStyle([
         ("GRID",(0,0),(-1,-1),0.5,colors.black),
@@ -222,7 +231,7 @@ def generate_pdf(project_data, departments, pcis_departments):
         ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
     
         # section row styling
-        ("SPAN",(0,1),(-1,1)),  # nanti akan kena semua section kalau looping
+        print(remark_text)
         ("FONTNAME",(0,1),(-1,-1),"Helvetica"),
         
         ("FONTSIZE",(0,0),(-1,-1),8),
