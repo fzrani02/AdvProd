@@ -30,14 +30,14 @@ def render_row(item, engineer_list, section):
         st.text_area(
             "",
             key=f"target_{normalize_key(section)}_{normalize_key(item)}",
-            height=100 if len(value) > 50 else 60
+            height=100 if len(value) > 50 else 60,
             label_visibility = "collapsed"
         )
     with c5:
         st.text_area(
             "",
             key=f"remark_{normalize_key(section)}_{normalize_key(item)}",
-            height=100 if len(value) > 50 else 60
+            height=100 if len(value) > 50 else 60,
             label_visibility = "collapsed"
         )
 
@@ -201,7 +201,7 @@ def render_items_to_check(df, item_check):
                                 st.text_area(
                                     "",
                                     key=f"target_ict_{normalize_key(left)}",
-                                    height=100 if len(value) > 50 else 60
+                                    height=100 if len(value) > 50 else 60,
                                     label_visibility="collapsed"
                                 )
                     
@@ -209,7 +209,7 @@ def render_items_to_check(df, item_check):
                                 st.text_area(
                                     "",
                                     key=f"remark_ict_{normalize_key(left)}",
-                                    height=100 if len(value) > 50 else 60
+                                    height=100 if len(value) > 50 else 60,
                                     label_visibility="collapsed"
                                 )
                            
