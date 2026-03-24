@@ -30,6 +30,7 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, m
     with left:
 
         st.write("") 
+        st.write("")
 
         col1,col2,col3,col4 = st.columns([3,3,2,3])
         col1.markdown("**Department**")
