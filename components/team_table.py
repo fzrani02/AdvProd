@@ -82,6 +82,7 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, m
                 selected = st.selectbox(
                     "",
                     engineer_list,
+                    index=default_index,
                     key=f"{key_prefix}_{dept}_engineer",
                     label_visibility="collapsed"
                 )
