@@ -1,5 +1,6 @@
 import pandas as pd
 
+@st.cache_data
 def load_database():
     return pd.read_csv("engineer_database.csv")
 
