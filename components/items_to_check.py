@@ -127,10 +127,9 @@ SECTIONS = {
     ]
 }
 
-if st.checkbox("Show Items Check"):
-    
-    render_items_to_check(df, item_check)
-    
+
+def render_items_to_check(df, item_check):
+
     st.markdown("## ITEMS TO CHECK")
     
     st.write ("NOTE: All documents/package from Design/Customer must be updated for every stage of the build including Mass Production")
