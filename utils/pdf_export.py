@@ -159,11 +159,17 @@ def generate_pdf(project_data, departments, pcis_departments):
     elements.append(Spacer(1,10))
 
     item_table = [["Section", "Item", "**", "PIC", "Target", "Remark"]]
+    section_row_indices = []
 
     for section, items in SECTIONS.items():
     
         # SECTION HEADER (biar kebaca di PDF)
-        item_table.append([f"{section}", "", "", "", "", ""])
+        section_row_indices.append(len(item_table))  # simpan index sebelum append
+
+        item_table.append([
+            Paragraph(f"<b>{section}</b>", cell_style),
+            "", "", "", "", ""
+        ])
     
         for item in items:
     
@@ -178,7 +184,7 @@ def generate_pdf(project_data, departments, pcis_departments):
     
                 item_table.append([
                     "",
-                    "ICT Program / Fixture",
+                    Paragraph("ICT Program / Fixture", cell_style),
                     "",
                     pic,
                     target,
@@ -197,7 +203,7 @@ def generate_pdf(project_data, departments, pcis_departments):
                     main_checked = st.session_state.get(f"remark_ict_{normalize_key(left)}", False)
 
                     checkbox_data = {
-                        "item": left,
+                        "item": Paragraph(left, cell_style),
                         "checked": main_checked
                     }
 
@@ -219,7 +225,7 @@ def generate_pdf(project_data, departments, pcis_departments):
     
                     item_table.append([
                         "",
-                        left,
+                        Paragraph(left, cell_style),
                         checkbox_json,
                         pic,
                         target,
@@ -243,7 +249,7 @@ def generate_pdf(project_data, departments, pcis_departments):
     
                 item_table.append([
                     "",
-                    item,
+                    Paragraph(item, cell_style),
                     "",
                     pic,
                     target,
@@ -252,28 +258,27 @@ def generate_pdf(project_data, departments, pcis_departments):
 
     ###############
     
-    items = Table(item_table, colWidths=[55,100,85,75,65,110], hAlign='LEFT')
+    items = Table(item_table, colWidths=[50,120,80,70,60,105], hAlign='LEFT')
 
-    items.setStyle(TableStyle([
+    table_style = TableStyle([
         ("LEFTPADDING",(0,0),(-1,-1),4),
         ("RIGHTPADDING",(0,0),(-1,-1),4),
         ("TOPPADDING",(0,0),(-1,-1),2),
         ("BOTTOMPADDING",(0,0),(-1,-1),2),
         ("GRID",(0,0),(-1,-1),0.5,colors.black),
         ("BACKGROUND",(0,0),(-1,0),colors.lightgrey),
-    
-        # header bold
-        ("SPAN",(0,1),(5,1)),  # nanti dynamic kalau mau lebih proper
-        ("BACKGROUND",(0,1),(5,1),colors.lightgrey),
-        ("FONTNAME",(0,1),(5,1),"Helvetica-Bold"),
         ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
-    
-        # section row styling
-        ("FONTNAME",(0,1),(-1,-1),"Helvetica"),
-        
         ("FONTSIZE",(0,0),(-1,-1),8),
         ("VALIGN",(0,0),(-1,-1),"TOP"),
-    ]))
+    ])
+    
+    # 🔥 dynamic section styling
+    for row_idx in section_row_indices:
+        table_style.add("SPAN", (0,row_idx), (5,row_idx))
+        table_style.add("BACKGROUND", (0,row_idx), (5,row_idx), colors.lightgrey)
+        table_style.add("FONTNAME", (0,row_idx), (5,row_idx), "Helvetica-Bold")
+    
+    items.setStyle(table_style)
 
     elements.append(items)
 
