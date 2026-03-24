@@ -26,6 +26,10 @@ def generate_pdf(project_data, departments, pcis_departments):
 
     styles = getSampleStyleSheet()
     remark_style = styles["Normal"]
+    cell_style = styles["Normal"]
+    cell_style.fontSize = 8
+    cell_style.leading = 10
+    cell_style.wordWrap = 'CJK'   # penting buat wrap paksa
     remark_style.fontSize = 8
     remark_style.leading = 10   # jarak antar baris
     elements = []
@@ -159,7 +163,7 @@ def generate_pdf(project_data, departments, pcis_departments):
     for section, items in SECTIONS.items():
     
         # SECTION HEADER (biar kebaca di PDF)
-        item_table.append([f"{section}", "", "", "", ""])
+        item_table.append([f"{section}", "", "", "", "", ""])
     
         for item in items:
     
@@ -167,7 +171,7 @@ def generate_pdf(project_data, departments, pcis_departments):
             if item == "ICT Program / Fixture":
     
                 # main row
-                pic = ", ".join(st.session_state.get("pic_ict", []))
+                pic = Paragraph(", ".join(st.session_state.get("pic_ict", [])), cell_style)
                 target = st.session_state.get("target_ict", "")
                 remark_text = st.session_state.get("remark_ict", "")
                 remark = Paragraph(remark_text.replace("\n", "<br/>"), remark_style)
@@ -175,6 +179,7 @@ def generate_pdf(project_data, departments, pcis_departments):
                 item_table.append([
                     "",
                     "ICT Program / Fixture",
+                    "",
                     pic,
                     target,
                     remark
@@ -185,8 +190,8 @@ def generate_pdf(project_data, departments, pcis_departments):
     
                     checked = st.session_state.get(f"ict_{normalize_key(left)}", False)
     
-                    pic = ", ".join(st.session_state.get(f"pic_ict_{normalize_key(left)}", []))
-                    target = st.session_state.get(f"target_ict_{normalize_key(left)}", "")
+                    pic = Paragraph(", ".join(st.session_state.get(f"pic_ict_{normalize_key(left)}", [])), cell_style)
+                    target = Paragraph(str(st.session_state.get(f"target_ict_{normalize_key(left)}", "")).replace("\n","<br/>"), cell_style)
                     remark_text = st.session_state.get(f"remark_ict_{normalize_key(left)}", "")
 
                     main_checked = st.session_state.get(f"remark_ict_{normalize_key(left)}", False)
@@ -203,7 +208,10 @@ def generate_pdf(project_data, departments, pcis_departments):
                             "checked": right_checked
                         }
 
-                    checkbox_json = json.dumps(checkbox_data)
+                    checkbox_json = Paragraph(
+                        json.dumps(checkbox_data, indent=1).replace("\n","<br/>"),
+                        cell_style
+                    )
 
                     ##########
                     
@@ -222,16 +230,12 @@ def generate_pdf(project_data, departments, pcis_departments):
             else:
                 key_base = f"{normalize_key(section)}_{normalize_key(item)}"
     
-                pic = ", ".join(st.session_state.get(f"pic_{key_base}", []))
-                target = st.session_state.get(f"target_{key_base}", "")
+                pic = Paragraph(", ".join(st.session_state.get(f"pic_{key_base}", [])), cell_style)
+                target = Paragraph(str(st.session_state.get(f"target_{key_base}", "")).replace("\n","<br/>"), cell_style)
                 remark_text = st.session_state.get(f"remark_{key_base}", "")
 
-                # paksa wrap tiap 90 karakter 
 
-                if len(remark_text) > 90:
-                    remark_text = "<br/>".join(
-                        [remark_text[i:i+90] for i in range(0, len(remark_text), 90)]
-                    )
+                remark = Paragraph(remark_text.replace("\n","<br/>"), remark_style)
 
                 print(remark_text)
 
@@ -248,13 +252,20 @@ def generate_pdf(project_data, departments, pcis_departments):
 
     ###############
     
-    items = Table(item_table, colWidths=[70,110,140,80,70,180], hAlign='LEFT')
+    items = Table(item_table, colWidths=[55,100,85,75,65,110], hAlign='LEFT')
 
     items.setStyle(TableStyle([
+        ("LEFTPADDING",(0,0),(-1,-1),4),
+        ("RIGHTPADDING",(0,0),(-1,-1),4),
+        ("TOPPADDING",(0,0),(-1,-1),2),
+        ("BOTTOMPADDING",(0,0),(-1,-1),2),
         ("GRID",(0,0),(-1,-1),0.5,colors.black),
         ("BACKGROUND",(0,0),(-1,0),colors.lightgrey),
     
         # header bold
+        ("SPAN",(0,1),(5,1)),  # nanti dynamic kalau mau lebih proper
+        ("BACKGROUND",(0,1),(5,1),colors.lightgrey),
+        ("FONTNAME",(0,1),(5,1),"Helvetica-Bold"),
         ("FONTNAME",(0,0),(-1,0),"Helvetica-Bold"),
     
         # section row styling
