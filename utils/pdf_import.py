@@ -2,6 +2,12 @@ import pdfplumber
 import re
 import json
 
+def extract_revision_from_filename(filename):
+    match = re.search(r"Rev[_\s]?([A-Z])", filename, re.IGNORECASE)
+    if match:
+        return match.group(1).upper()
+    return None
+
 def parse_checkbox_json(text):
     try:
         return json.loads(text)
@@ -21,13 +27,16 @@ def read_pdf(uploaded_file):
 
     return text
 
-def parse_form(text):
+def parse_form(text, uploaded_file):
+    parsed = parse_from(text, uploaded_file)
     lines = text.split("\n")
 
     data = extract_project_data(lines)
     member_plant = extract_member_plant(lines)
     member_pcis = extract_member_pcis(lines)
     item_check = extract_item_check(lines)
+
+    revision_from_file = extract_revision_from_filename(uploaded_file.name)
 
     project_data = {
         "project_name": data.get("project_name",""),
@@ -36,7 +45,7 @@ def parse_form(text):
         "pci": data.get("pci",""),
         "project_account": data.get("project_account",""),
         "product_type": data.get("product_type",""),
-        "revision": data.get("revision","A"),
+        "revision": revision_from_file or data.get("revision", None),
         "date_updated": data.get("date_updated","")
     }
 
