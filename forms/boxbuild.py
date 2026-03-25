@@ -95,7 +95,7 @@ def render_boxbuild():
 
         for item in parsed.get("item_check", []):
             item_name = item.get("item", "")
-            key = normalize_key(item_name)
+            key_item = normalize_key(item_name)
 
             section_found = None
             for section, items in SECTIONS.items():
