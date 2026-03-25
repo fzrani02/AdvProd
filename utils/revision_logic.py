@@ -1,20 +1,17 @@
+def get_revision_week_map():
+    return{
+        "X": "m2",
+        "A": "m3",
+        "B": "m4"
+    }
+    
 def get_editable_column(revision, uploaded_pdf):
 
-    if revision is None and uploaded_pdf is None:
-        return 1
+    if not uploaded_file:
+        return "m1" 
 
-    elif revision is None and uploaded_pdf:
-        return 2
-
-    elif revision == "A":
-        return 3
-
-    elif revision == "B":
-        return 4
-
-    else:
-        return 1
-
+    revision_map = get_revision_week_map()
+    return revisio_map.get(revision, None)
 
 def get_next_revision(revision):
 
