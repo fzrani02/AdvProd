@@ -66,7 +66,7 @@ def render_boxbuild():
 
         
         text = read_pdf(uploaded_pdf)
-        parsed = parse_form(text)
+        parsed = parse_form(text, uploaded_file)
 
         st.write("PDF parse time:", time.time() - t_pdf)
         
@@ -133,22 +133,8 @@ def render_boxbuild():
         "Demand Planner"
     ]
 
-    editable_col =1
-
-    revision = None
-       
-    if revision is None and uploaded_pdf is None:
-        editable_col = 1
-    
-    elif revision is None and uploaded_pdf:
-        editable_col = 2
-    
-    elif revision == "A":
-        editable_col = 3
-    
-    elif revision == "B":
-        editable_col = 4
-
+    revision = project_data.get("revision")
+    editable_col = get_editable_column(revision, uploaded_pdf)
    
     with st.expander("PROJECT TEAM MEMBERS (PLANT)", expanded=False):
         t_table1 = time.time()
@@ -196,19 +182,22 @@ def render_boxbuild():
     if st.button("Export to PDF"):
         t_export = time.time()
         
-        revision = get_next_revision(project_data.get("revision"))
-        project_data["revision"] = revision
+        current_revision = project_data.get("revision")
+        next_revision = get_next_revision(current_revision)
+
+        # update data 
+        project_data["revision"] = next_revision
         project_data["date_updated"] = date.today()
-    
+        
         pdf_file = generate_pdf(project_data, departments, pcis_departments)
+        
         st.write("PDF generate time:", time.time() - t_export)
 
         pci = project_data.get("pci","")
         account = project_data.get("project_account","")
-        date_updated = project_data.get("data_updated", date.today())
-        revision = project_data.get("revision","")
+        date_updated = project_data.get("date_updated", date.today())
         
-        filename = f"Attendance - {pci} - {account} - {date_updated} - Rev {revision}.pdf"
+        filename = f"Attendance - {pci} - {account} - {date_updated} - Rev {next_revision}.pdf"
 
         st.download_button(
             label="Download PDF",
