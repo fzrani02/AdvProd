@@ -87,7 +87,7 @@ def extract_project_data(lines):
             if len(parts) > 2:
                 data["revision"] = parts[-1]
             else:
-                data["revision"] = "A"
+                data["revision"] = None
 
     return data
 
