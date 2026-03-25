@@ -317,8 +317,8 @@ def extract_item_check(lines):
             items.append({
                 "item": " ".join(parts[:-3]),
                 "pic": parts[-3],
-                "target": parts[-2],
-                "remark": " ".join(parts[-1:]),
+                "target": parts[-2] if len(parts) >= 2 else "",
+                "remark": " ".join(parts[-1:]) if len(parts) >= 1 else "",
                 "checkbox": checkbox_data 
             })
         else:
