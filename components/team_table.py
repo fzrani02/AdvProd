@@ -58,16 +58,16 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, m
         col1,col2,col3,col4 = st.columns([1,1,1,1], gap="small")
 
         with col1:
-            st.date_input("", key=f"{key_prefix}_mtg1", disabled=editable_col != 1, label_visibility="collapsed")
+            st.date_input("", key=f"{key_prefix}_mtg1", disabled=editable_col != "m1", label_visibility="collapsed")
 
         with col2:
-            st.date_input("", key=f"{key_prefix}_mtg2", disabled=editable_col != 2, label_visibility="collapsed")
+            st.date_input("", key=f"{key_prefix}_mtg2", disabled=editable_col != "m2", label_visibility="collapsed")
 
         with col3:
-            st.date_input("", key=f"{key_prefix}_mtg3", disabled=editable_col != 3, label_visibility="collapsed")
+            st.date_input("", key=f"{key_prefix}_mtg3", disabled=editable_col != "m3", label_visibility="collapsed")
 
         with col4:
-            st.date_input("", key=f"{key_prefix}_mtg4", disabled=editable_col != 4, label_visibility="collapsed")
+            st.date_input("", key=f"{key_prefix}_mtg4", disabled=editable_col != "m4", label_visibility="collapsed")
 
     ######
 
@@ -144,19 +144,19 @@ def render_team_table(df, initial, departments, editable_col, attendance_data, m
 
             with col1:
                 checked = attendance_data.get(dept, {}).get("m1", False)
-                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m1", disabled=(editable_col != 1) or (not engineer_selected))
+                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m1", disabled=(editable_col != "m1") or (not engineer_selected))
 
             with col2:
                 checked = attendance_data.get(dept, {}).get("m2", False)
-                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m2", disabled=(editable_col != 2) or (not engineer_selected))
+                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m2", disabled=(editable_col != "m2") or (not engineer_selected))
 
             with col3:
                 checked = attendance_data.get(dept, {}).get("m3", False)
-                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m3", disabled=(editable_col != 3) or (not engineer_selected))
+                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m3", disabled=(editable_col != "m3") or (not engineer_selected))
 
             with col4:
                 checked = attendance_data.get(dept, {}).get("m4", False)
-                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m4", disabled=(editable_col != 4) or (not engineer_selected))
+                st.checkbox("", value=checked, key=f"{key_prefix}_{dept}_m4", disabled=(editable_col != "m4") or (not engineer_selected))
 
 
 
