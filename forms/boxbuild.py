@@ -29,9 +29,10 @@ def convert_to_dict(data_list):
 def apply_checkbox_state(item_check):
     for item in item_check:
         
-        left = checkbox.get("item")
+        left = item.get("item")
+        
         if left:
-            st.session_state[f"ict_{normalize_key(left)}"] = checkbox.get("checked", False)
+            st.session_state[f"ict_{normalize_key(left)}"] = item.get("checked", False)
 
         right = item.get("pair_label")
 
@@ -40,20 +41,16 @@ def apply_checkbox_state(item_check):
 
         key = normalize_key(left) if left else None
 
-        if key:
-            st.session_state[f"target_ict_{key}"] = item.get("target", "")
-            st.session_state[f"remark_ict_{key}"] = item.get("remark", "")
+        if not key:
+            continue
 
-        if "pair" in checkbox:
-            right =  checkbox["pair"].get("label")
-            if right:
-                st.session_state[f"ict_{normalize_key(right)}"] = checkbox["pair"].get("checked", False)
+      
+        st.session_state[f"target_ict_{key}"] = item.get("target", "")
+        st.session_state[f"remark_ict_{key}"] = item.get("remark", "")
 
-        key = normalize_key(left) if left else None
-
-        if key:
-            st.session_state[f"target_ict_{key}"] = item.get("target", "")
-            st.session_state[f"remark_ict_{key}"] = item.get("target", "")
+        pic_raw = item.get("pic", "")
+        if pic_raw:
+            st.session_state[f"pic_ict_{key}"] = [p.strip() for p in pic_raw.split(",")]
 
 def render_boxbuild():
     import time
