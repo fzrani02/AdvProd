@@ -28,14 +28,21 @@ def convert_to_dict(data_list):
 
 def apply_checkbox_state(item_check):
     for item in item_check:
-        checkbox = item.get("checkbox")
-
-        if not checkbox:
-            continue
-
+        
         left = checkbox.get("item")
         if left:
             st.session_state[f"ict_{normalize_key(left)}"] = checkbox.get("checked", False)
+
+        right = item.get("pair_label")
+
+        if right:
+            st.session_state[f"ict_{normalize_key(right)}"] = item.get("pair_checked", False)
+
+        key = normalize_key(left) if left else None
+
+        if key:
+            st.session_state[f"target_ict_{key}"] = item.get("target", "")
+            st.session_state[f"remark_ict_{key}"] = item.get("remark", "")
 
         if "pair" in checkbox:
             right =  checkbox["pair"].get("label")
@@ -95,17 +102,6 @@ def render_boxbuild():
         for item in parsed.get("item_check", []):
 
             name = item.get("item", "").lower()
-
-            if name == "agilent":
-                st.session_state["ict_agilent"] = item.get("checked", False)
-                st.session_state["ict_tri"] = item.get("pair_checked", False)
-
-            elif name == "teradyne":
-                st.session_state["ict_teradyne"] = item.get("checked", False)
-                st.session_state["ict_tescon"] = item.get("pair_checked", False)
-
-            elif name == "genrad":
-                st.session_state["ict_genrad"] = item.get("checked", False)
             
             item_name = item.get("item", "")
             key_item = normalize_key(item_name)
@@ -152,6 +148,8 @@ def render_boxbuild():
         
         revision = project_data.get("revision", "A")
         editable_col = get_editable_column(revision, uploaded_pdf)
+
+    st.write(parsed.get("item_check"))
 
     st.markdown("---")
     
