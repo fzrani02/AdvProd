@@ -61,6 +61,10 @@ def parse_form(text, uploaded_file):
         "item_check": item_check
     }
 
+    print("ITEM CHECK RESULT:")
+    for i in item_check:
+        print(i)
+
 
 def extract_project_data(lines):
 
