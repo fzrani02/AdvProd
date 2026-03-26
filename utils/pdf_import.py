@@ -26,6 +26,9 @@ def read_pdf(uploaded_file):
         for page in pdf.pages:
             text += page.extract_text() + "\n"
 
+            print("==== PDF TEXT ====")
+            print(text[:2000])
+
     return text
 
 def parse_form(text, uploaded_file):
@@ -309,4 +312,47 @@ def extract_item_check(lines):
             buffer = ""
 
     return items
+
+def extract_item_check_from_tables(pdf):
+    items = []
+    for page in pdf.pages:
+        tables = page.extract_tables()
+
+        for table in tables:
+            for row in table:
+                if not row:
+                    continue
+
+                for cell in row:
+                    if not cell:
+                        continue
+
+                    cell = cell.strip()
+
+                    if "{" in cell and "}" in cell:
+                        try:
+                            data = json.loads(cell)
+
+                            item_name = data.get("item")
+                            checked = data.get("checked", False)
+
+                            pair_label = None
+                            pair_checked = False
+
+                            if "pair" in data:
+                                pair_label = data["pair"].get("label")
+                                pair_checked = data["pair"].get("checked", False)
+
+                            items.append({
+                                "item": item_name,
+                                "checked": checked,
+                                "pair_label": pair_label,
+                                "pair_checked": pair_checked
+                            })
+
+                        except Exception as e:
+                            print("JSON ERROR:", e)
+
+    return items
+                                
 
