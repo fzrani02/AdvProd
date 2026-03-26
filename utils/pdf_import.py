@@ -315,6 +315,7 @@ def extract_item_check(lines):
     return items
 
 def extract_item_check_from_tables(pdf):
+    print("ROW:", row)
     items = []
     for page in pdf.pages:
         tables = page.extract_tables()
