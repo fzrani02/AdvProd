@@ -38,8 +38,9 @@ def parse_form(text, uploaded_file):
     data = extract_project_data(lines)
     member_plant = extract_member_plant(lines)
     member_pcis = extract_member_pcis(lines)
-    item_check = extract_item_check(lines)
-
+    with pdfplumber.open(uploaded_file) as pdf:
+        item_check = extract_item_check_from_tables(pdf)
+        
     revision_from_file = extract_revision_from_filename(uploaded_file.name)
 
     project_data = {
@@ -320,39 +321,38 @@ def extract_item_check_from_tables(pdf):
 
         for table in tables:
             for row in table:
-                if not row:
+                if not row or len(row) < 5:
                     continue
 
-                for cell in row:
-                    if not cell:
-                        continue
+                item_name = row[1]
+                json_cell = row[2]
+                pic = row[3]
+                target = row[4]
+                remark = row[5] if len(row) > 5 else ""
 
-                    cell = cell.strip()
+                if not json_cell or "{" not in json_cell:
+                    continue
 
-                    if "{" in cell and "}" in cell:
-                        try:
-                            data = json.loads(cell)
+                try:
+                    data = json.loads(json_cell)
+                    checked = data.get("checked", False)
+                    pair_label = None
+                    pair_checked = False
 
-                            item_name = data.get("item")
-                            checked = data.get("checked", False)
+                    if "pair" in data:
+                        pair_label = data["pair"].get("label")
+                        pair_checked = data["pair"].get("checked", False)
 
-                            pair_label = None
-                            pair_checked = False
-
-                            if "pair" in data:
-                                pair_label = data["pair"].get("label")
-                                pair_checked = data["pair"].get("checked", False)
-
-                            items.append({
-                                "item": item_name,
-                                "checked": checked,
-                                "pair_label": pair_label,
-                                "pair_checked": pair_checked
-                            })
+                        items.append({
+                            "item": item_name,
+                            "checked": checked,
+                            "pair_label": pair_label,
+                            "pair_checked": pair_checked
+                        })
 
                         except Exception as e:
                             print("JSON ERROR:", e)
 
     return items
-                                
 
+              
