@@ -283,7 +283,22 @@ def extract_item_check(lines):
             data = parse_checkbox_json(buffer)
 
             if data:
-                items.append(data)
+                items_name = data.get("item")
+                checked = data.get("checked", False)
+
+                pair_label = None
+                pair_checked = False
+
+                if "pair" in data:
+                    pair_label = data["pair"].get("label")
+                    pair_checked = data["pair"].get("checked", False)
+
+                items.append ({
+                    "item": item_name,
+                    "checked": checked,
+                    "pair_label": pair_label,
+                    "pair_checked": pair_checked
+                })
 
             buffer = ""
 
