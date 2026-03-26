@@ -149,7 +149,7 @@ def render_boxbuild():
         revision = project_data.get("revision", "A")
         editable_col = get_editable_column(revision, uploaded_pdf)
 
-    st.write(parsed.get("item_check"))
+        st.write(parsed.get("item_check"))
 
     st.markdown("---")
     
