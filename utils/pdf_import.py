@@ -312,6 +312,9 @@ def extract_item_check(lines):
                     "checked": checked,
                     "pair_label": pair_label,
                     "pair_checked": pair_checked
+                    "pic":pic,
+                    "target": target,
+                    "remark": remark
                 })
 
             buffer = ""
