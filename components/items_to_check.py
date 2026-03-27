@@ -195,8 +195,7 @@ def render_items_to_check(df, item_check):
                                 key_left = f"ict_{normalize_key(left)}"
                                 st.checkbox(
                                     left, 
-                                    key=key_left,
-                                    value = st.session_state.get(key_left, False)
+                                    key=key_left
                                 )
                     
                             with c2:
@@ -204,8 +203,7 @@ def render_items_to_check(df, item_check):
                                     key_right = f"ict_{normalize_key(right)}"
                                     st.checkbox(
                                         right, 
-                                        key=key_right,
-                                        value=st.session_state.get(key_right, False)
+                                        key=key_right
                                     )
                     
                             with c3:
