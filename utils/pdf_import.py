@@ -330,9 +330,9 @@ def extract_item_check_from_tables(pdf):
                 if not row or len(row) < 5:
                     continue
 
-                item_name = row[1] 
-                
-                if not item_name or str(item_name).strip() == "":
+                item_name = str(row[1]).strip()
+
+                if not item_name:
                     continue
                 
                 json_cell = row[2]
