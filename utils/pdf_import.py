@@ -337,31 +337,28 @@ def extract_item_check_from_tables(pdf):
                 target = row[4]
                 remark = row[5] if len(row) > 5 else ""
 
-                if not json_cell or "{" not in json_cell:
-                    continue
+                data = {}
+                checked = False
+                pair_label = None
+                pair_checked = False
 
-                try:
-                    data = json.loads(json_cell)
-                    checked = data.get("checked", False)
-                    pair_label = None
-                    pair_checked = False
+                if not json_cell and "{" in json_cell:
+                    try:
+                        data =  json.loads(json_cell)
+                        checked = data.get("checked", False)
 
-                    if "pair" in data:
-                        pair_label = data["pair"].get("label")
-                        pair_checked = data["pair"].get("checked", False)
-
-                        items.append({
-                            "item": item_name,
-                            "checked": checked,
-                            "pair_label": pair_label,
-                            "pair_checked": pair_checked,
-                            "pic":pic,
-                            "target": target,
-                            "remark": remark
-                        })
-
-                except Exception as e:
-                    print("JSON ERROR:", e)
+                    except Exception as e:
+                        print("JSON ERROR:", e)
+                        
+                items.append({
+                    "item": item_name,
+                    "checked": checked,
+                    "pair_label": pair_label,
+                    "pair_checked": pair_checked,
+                    "pic":pic,
+                    "target": target,
+                    "remark": remark
+                })
 
     return items
 
