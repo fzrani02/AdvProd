@@ -93,21 +93,28 @@ def render_boxbuild():
         "Upload Previous Briefing PDF",
         type=["pdf"]
     )
-    parsed = None
-    
+        
     if uploaded_pdf and "parsed_data" not in st.session_state:
+        text = read_pdf(uploaded_pdf)
+        parsed = parse_form(text, uploaded_pdf)
+        st.session_state["parsed_data"] = parsed
+
+    if "parsed_data" in st.session_state:
+        parsed = st.session_state["parsed_data"]
+        
+        for k in list(st.session_state.keys()):
+            if k.startswith("ict_"):
+                del st.session_state[k]
+                
+        apply_checkbox_state(parsed.get("item_check"), []))
 
         t_pdf =time.time()
         
-        text = read_pdf(uploaded_pdf)
-        parsed = parse_form(text, uploaded_pdf)
-
         st.write("DEBUG item_check:", parsed.get("item_check"))
         st.write("PDF ITEMS:", [i["item"] for i in parsed["item_check"]])
         for i in parsed["item_check"]:
             st.write(i["item"], "->", get_section_by_item(i["item"]))
 
-        st.session_state["parsed_data"] = parsed
 
         for member in parsed.get("member_plant", []):
             dept = member["department"]
@@ -127,8 +134,6 @@ def render_boxbuild():
             if k.startswith("ict_"):
                 del st.session_state[k]
         
-        apply_checkbox_state(parsed.get("item_check", []))
-
         st.write("PDF parse time:", time.time() - t_pdf)
 
         st.write("PAIR DEBUG:")
