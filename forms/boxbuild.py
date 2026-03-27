@@ -26,42 +26,52 @@ def convert_to_dict(data_list):
             result[dept] = item
     return result
 
-def apply_checkbox_state(item_check):
-    st.write("DEBUG KEY PDF:",
-        normalize_key("ICT Program / Fixture"))
+def get_section_by_item(item_name):
+    from components.items_to_check import SECTIONS, normalize_key
     
+    item_norm = normalize_key(item_name)
+
     for section, items in SECTIONS.items():
         for i in items:
-            if "ICT Program" in i:
-                st.write("DEBUG KEY SECTION:", normalize_key(i))
-                
+            if item_norm in normalize_key(i) or normalize_key(i) in item_norm:
+                return section
+    return None
+
+def apply_checkbox_state(item_check):
+    from components.items_to_check import normalize_key
+
     for item in item_check:
         
-        left = item.get("item")
-        
-        if left:
-            st.session_state[f"ict_{normalize_key(left)}"] = item.get("checked", False)
-
-        right = item.get("pair_label")
-
-        if right:
-            st.session_state[f"ict_{normalize_key(right)}"] = item.get("pair_checked", False)
-
-        key = normalize_key(left) if left else None
-
-        if not key:
+        item_name = item.get("item")
+        if not item_name:
             continue
 
-      
-        st.session_state[f"target_ict_{key}"] = item.get("target", "")
-        st.session_state[f"remark_ict_{key}"] = item.get("remark", "")
+        section = get_section_by_item(item_name)
+        if not section:
+            continue
 
-        if key:
-            st.session_state[f"pic_ict_{key}"] = item.get("pic", "")
+        section_key = normalize_key(section)
+        item_key = normalize_key(item_name)
 
+        # ✅ PIC
         pic_raw = item.get("pic", "")
         if pic_raw:
-            st.session_state[f"pic_ict_{key}"] = [p.strip() for p in pic_raw.split(",")]
+            st.session_state[f"pic_{section_key}_{item_key}"] = [
+                p.strip() for p in pic_raw.split(",") if p.strip()
+            ]
+
+        # ✅ TARGET
+        st.session_state[f"target_{section_key}_{item_key}"] = item.get("target", "")
+
+        # ✅ REMARK
+        st.session_state[f"remark_{section_key}_{item_key}"] = item.get("remark", "")
+
+        # ✅ CHECKBOX (optional global)
+        st.session_state[f"check_{section_key}_{item_key}"] = item.get("checked", False)
+
+        # ✅ KHUSUS ICT checkbox kecil (Agilent, dll)
+        if item_name in ["Agilent", "Tri", "Teradyne", "Tescon", "Genrad"]:
+            st.session_state[f"ict_{normalize_key(item_name)}"] = item.get("checked", False)
 
 def render_boxbuild():
     import time
