@@ -103,7 +103,13 @@ def render_boxbuild():
 
         for item in parsed.get("item_check", []):
 
-            name = item.get("item", "").lower()
+            item_name = item.get("item")
+
+            if not item_name:
+                continue
+
+            name = item_name.lowe()
+            
             
             item_name = item.get("item", "")
             key_item = normalize_key(item_name)
