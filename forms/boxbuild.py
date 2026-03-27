@@ -122,12 +122,23 @@ def render_boxbuild():
         for key, value in parsed["project_data"].items(): 
              st.session_state[key] = value
     
+        # 🔥 reset dulu biar ga ke-cache
+        for k in list(st.session_state.keys()):
+            if k.startswith("ict_"):
+                del st.session_state[k]
+        
         apply_checkbox_state(parsed.get("item_check", []))
 
         st.write("PDF parse time:", time.time() - t_pdf)
+
         st.write("PAIR DEBUG:")
         for i in parsed["item_check"]:
             st.write(i["item"], "->", i.get("pair_label"), i.get("pair_checked"))
+
+        st.write("ICT STATE DEBUG:")
+        for k,v in st.session_state.items():
+            if k.startswith("ict_"):
+                st.write(k, "=", v)
 
     ################ sini
 
